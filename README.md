@@ -1,36 +1,28 @@
-# n76e003_platformio
- Nuvoton MCUs (N76E003) example project with PlatformIO
+# Introduction
 
+This is a fork from: https://github.com/arduino12/n76e003_platformio
+It allows to compile and upload to a Nuvoton N76E003 or a MS51FB9AE. Many other Nuvoton controllers may be compatible.
 
-## Introduction
-I just got many N76E003 based modules and I want to develop and upload them my own firmware!  
-Afte some searching it seems everyone uses keil + uVision IDE (free is limited to 4KB flash out of 18KB),  
-So I knew my next project is to add this N76E003 board to [PlatformIO](https://platformio.org/) using free [SDCC](http://sdcc.sourceforge.net)!
+## Changes
 
-## Features
-* I wrote uploader script- currently `upload_protocol` = `custom` but I want to make tool-nulink so it will be `nulink`.
-* The uploader script can use Nuvoton CLI tool or GUI tool for uploading - the GUI works much better and faster (~4s vs ~20s).
-* Fully free, no code size limit and open source thanks to SDCC + PlatformIO.
+This is a simplified version. The python script now only support the NuLink Command Line Tool.
+The script now uses the the NuLink_8051OT.exe instead of the NuLink.exe. An issues with long paths including spaces has been resolved. A line has been added that allows to use the --model-medium build flag in the pio-file (base on https://community.platformio.org/t/platformio-8051-model-medium-linker-err/18099/4).
 
-## Getting Started
+# Getting Started
 
-### Hardware
-* Buy Nu-Link ICP programmer: [this](https://www.aliexpress.com/item/32815222785.html) and [this](https://www.aliexpress.com/item/4000410409070.html) works for me.
-* Buy N76E003 EVB: [this](https://www.aliexpress.com/item/1005002134285257.html) and [this](https://www.aliexpress.com/item/1005001893572711.html) works for me, also many modules use them like [this](https://www.aliexpress.com/item/33034099678.html)
+- Download and install [Visual code](https://code.visualstudio.com/download)
+- Install [PlatformIO](https://platformio.org/platformio-ide) extension to Visual code.
+- Download and install NuLink CLI tool (Nu-Link_Command_Tool_VXXX.zip) from [Nuvoton tools](https://www.nuvoton.com/tool-and-software/software-development-tool/programmer).
+- Clone or download this [repo](https://github.com/fkainka/n76e003_platformio), open it with VSCode and upload it via PlatformIO-upload command.
 
-### Software
-* Download and install [Visual code](https://code.visualstudio.com/download)
-* Install [PlatformIO](https://platformio.org/platformio-ide) extension to Visual code.
-* Download and install the NuMicroICP and/or NuLinkCLI from [Nuvoton tools](https://www.nuvoton.com/tool-and-software/software-development-tool/programmer).
-* Clone this [repo](https://github.com/arduino12/n76e003_platformio), open it with Visual code and upload it via PlatformIO-upload command.
+![](/vscode.png)
 
-## TODO
-* Add more examples.
-* PR to [platform-intel_mcs51](https://github.com/platformio/platform-intel_mcs51) to add N76E003 board and examples.
-* Move [uploader script](https://github.com/arduino12/n76e003_platformio/blob/main/extra_script.py) into a tool-nulink package repo of PlatformIO.
-* Move [N76E003 lib](https://github.com/arduino12/n76e003_platformio/tree/main/lib/N76E003) into a freamwork package of PlatformIO or into tool-SDCC.
-* Implement Arduino-like API like [this](https://tenbaht.github.io/sduino/api/migration/) amazing project - because the N76E003 is VERY simular to STM8S103.
+## Testet Hardware
 
-## Enjoy!
-A.E.TECH
+I used a Nu-Link-Me V3.0 programmer (simliar to https://www.techdesign.com/market/nuvoton/product-detail/ntc000108/nutiny-n76e003) to programm a MS51FB9AE controller.
 
+## What's happeing
+
+PlatformIO will compile your source-code with the SDCC-Compiler (if possible) to the .pio\build\n76e003\firmware.hex file.
+The main magic is happening in the nulink.py python script, which will be called due to the extra_script option in the platformio.ini.
+The script will try to call the CLI-Tool-Exe-File to first erase the APROM and upload the compiled hex to the APROM afterwards.
